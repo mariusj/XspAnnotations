@@ -1,0 +1,10 @@
+/javaee_5.xsd
+/javaee_web_services_client_1_2.xsd
+/web-facesconfig_1_2.xsd 
+
+*.class
+
+# Package Files #
+*.jar
+*.war
+*.ear
