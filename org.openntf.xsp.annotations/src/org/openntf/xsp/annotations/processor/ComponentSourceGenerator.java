@@ -172,6 +172,12 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 			} else {
 				defaultValue = "null";
 			}
+		} else {
+			if ("float".equals(propInfo.xspType)) {
+				defaultValue += "f";
+			} else if ("java.lang.String".equals(propInfo.xspType)) {
+				defaultValue = "\"" + defaultValue + "\"";
+			}
 		}
 		source.append("return " + defaultValue + ";\n");
 		source.append("}\n\n");

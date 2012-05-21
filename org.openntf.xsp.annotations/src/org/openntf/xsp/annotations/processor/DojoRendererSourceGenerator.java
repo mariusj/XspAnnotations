@@ -152,8 +152,8 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 			return;
 		if (dojoAnnotation == null)
 			return;
-		PropertyInfo jtype = ComponentProcessor.javaTypeToXspType(field);
-		fields.add(jtype);
+		PropertyInfo propInfo = ComponentProcessor.javaTypeToXspType(field);
+		fields.add(propInfo);
 	}
 	
 	/**
@@ -168,16 +168,16 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 				"if (dojoComponent instanceof " + componentSimpleName + " ) {\n" +
 				componentSimpleName + " c = (" + componentSimpleName + ") dojoComponent;\n");
 	    for (int i=0; i<fields.size(); i++) {
-	    	PropertyInfo jtype = fields.get(i);
-	    	String prefix = "boolean".equals(jtype.xspType) ? "is" : "get";
-	    	String defaultValue = jtype.annotation.defaultValue();
+	    	PropertyInfo propInfo = fields.get(i);
+	    	String prefix = "boolean".equals(propInfo.xspType) ? "is" : "get";
+	    	String defaultValue = propInfo.annotation.defaultValue();
 	    	if (!"".equals(defaultValue)) {
 		    	source.append("DojoRendererUtil.addDojoHtmlAttributes(attrs, \"" + 
-		    			jtype.fieldName + "\", c." + prefix + jtype.fieldUName + "(), " +
+		    			propInfo.fieldName + "\", c." + prefix + propInfo.fieldUName + "(), " +
 		    			defaultValue + ");\n");
 	    	} else {
 		    	source.append("DojoRendererUtil.addDojoHtmlAttributes(attrs, \"" + 
-		    			jtype.fieldName + "\", c." + prefix + jtype.fieldUName + "());\n");
+		    			propInfo.fieldName + "\", c." + prefix + propInfo.fieldUName + "());\n");
 	    	}
 	    }
 		source.append("}\n}\n");

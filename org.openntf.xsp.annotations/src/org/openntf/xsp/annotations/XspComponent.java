@@ -65,7 +65,7 @@ public @interface XspComponent {
 	/**
 	 * Component family. 
 	 */
-	String componentFamily() default "";
+	String componentFamily();
 	
 	/**
 	 * Symbol of a renderer. Defaults to the class name.
