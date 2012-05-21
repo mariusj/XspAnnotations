@@ -1,6 +1,6 @@
-/javaee_5.xsd
-/javaee_web_services_client_1_2.xsd
-/web-facesconfig_1_2.xsd 
+/org.openntf.xsp.annotations/javaee_5.xsd
+/org.openntf.xsp.annotations/javaee_web_services_client_1_2.xsd
+/org.openntf.xsp.annotations/web-facesconfig_1_2.xsd 
 
 *.class
 
