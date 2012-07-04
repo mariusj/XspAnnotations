@@ -21,8 +21,8 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenProperty;
 
 /**
  * Base class for code & resource generators processing annotation XspComponent.  
@@ -55,14 +55,14 @@ public abstract class AbstractGenerator {
 	 * @param element processed class
 	 * @param annotation class annotation
 	 */
-	public abstract void newComponent(TypeElement element, XspComponent annotation);
+	public abstract void newComponent(TypeElement element, XspGenComponent annotation);
 	
 	/**
 	 * Called on new property (field with XspProperty annotation).
 	 * @param field processed field
 	 * @param annProp field annotation
 	 */
-	public abstract void newProperty(VariableElement field, XspProperty annProp);
+	public abstract void newProperty(VariableElement field, XspGenProperty annProp);
 	
 	/**
 	 * Called after all properties of component.

@@ -27,8 +27,8 @@ import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
 
 
@@ -43,7 +43,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 	private String newFullName;
 	private String newSimpleName;
 
-	private XspProperty annProp;
+	private XspGenProperty annProp;
 	private List<PropertyInfo> fields;
 	
 	private StringBuilder source;
@@ -59,7 +59,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public void newComponent(TypeElement element, XspComponent annotation) {
+	public void newComponent(TypeElement element, XspGenComponent annotation) {
 		if (!annotation.generateComponentCode())
 			return;
 		
@@ -93,7 +93,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 	 * Generates constructor.
 	 * @param annotation
 	 */
-	private void constructor(XspComponent annotation) {
+	private void constructor(XspGenComponent annotation) {
 		source.append("public " + newSimpleName + "() {\n");
 		if (!"".equals(annotation.renderer()))
 			source.append("setRendererType(\"" + annotation.renderer() + "\");\n");
@@ -116,7 +116,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 	 * Generates getter and setter.
 	 */
 	@Override
-	public void newProperty(VariableElement field, XspProperty annProp) {
+	public void newProperty(VariableElement field, XspGenProperty annProp) {
 		if (annProp.dontGenerateCode())
 			return;
 		

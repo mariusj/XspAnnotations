@@ -19,77 +19,70 @@ package org.openntf.xsp.annotations;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Target;
 
-
 /**
- * Defines a XPage component
+ * Defines a XPages property
  * @author Mariusz Jakubowski
  *
  */
-@Target(ElementType.TYPE)
-public @interface XspComponent {
+@Target(ElementType.FIELD)
+public @interface XspGenProperty {
 	/**
-	 * Description of a component.
+	 * Description of a property.
 	 */
 	String description();
 	
 	/**
-	 * Name of a component.
+	 * Name displayed in property editor.
 	 */
 	String displayName();
 	
 	/**
-	 * Path to small icon.
+	 * Property class used in xsp-config.
 	 */
-	String smallIcon() default "";
+	String propertyClass() default "";
+	
+	/**
+	 * Default property value.
+	 */
+	String defaultValue() default "";
+	
+	/**
+	 * Category of a property
+	 */
+	String category() default "";
+	
+	/**
+	 * Editor used to edit property in properties editor.
+	 */
+	String editor() default "";
+	
+	/**
+	 * Editor parameters.
+	 */
+	String editorParameter() default "";
 
 	/**
-	 * Path to large icon.
+	 * Flag allowRunTimeBinding in xsp-config
 	 */
-	String largeIcon() default "";
+	boolean allowRunTimeBinding() default true;
 	
 	/**
-	 * Tag used in xpage.
+	 * If true this property is a collection
 	 */
-	String tagName();
+	boolean collectionProperty() default false;
 	
 	/**
-	 * Type of a component. Defaults to the class name. 
+	 * For collection property - class for property item. 
 	 */
-	String componentType() default "";
-
-	/**
-	 * Type of a base component. 
-	 */
-	String baseComponentType();
+	String propertyItemClass() default "";
 	
 	/**
-	 * Component family. 
+	 * For collection property - name of a method to add a new item. 
 	 */
-	String componentFamily();
+	String propertyAddMethod() default "";
 	
 	/**
-	 * Symbol of a renderer. Defaults to the class name.
+	 * If true code for this property will not be generated. 
 	 */
-	String renderer() default "";
-	
-	/**
-	 * Show in palette.
-	 */
-	boolean inPalette() default true;
-	
-	/**
-	 * Category in palette.
-	 */
-	String paletteCategory() default "";
-	
-	/**
-	 * Preview markup.
-	 */
-	String markup() default "";
-	
-	/**
-	 * Flag indicating that a source code for a component should not be generated.
-	 */
-	boolean generateComponentCode() default true;
-	
+	boolean dontGenerateCode() default false;
 }

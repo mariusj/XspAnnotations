@@ -36,8 +36,8 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenProperty;
 
 
 /**
@@ -46,9 +46,9 @@ import org.openntf.xsp.annotations.XspProperty;
  *
  */
 @SupportedAnnotationTypes(value = { 
-		"org.openntf.xsp.annotations.XspComponent", 
-		"org.openntf.xsp.annotations.XspProperty",
-		"org.openntf.xsp.annotations.XspDojoRenderer",
+		"org.openntf.xsp.annotations.XspGenComponent", 
+		"org.openntf.xsp.annotations.XspGenProperty",
+		"org.openntf.xsp.annotations.XspGenDojoRenderer",
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ComponentProcessor extends AbstractProcessor {
@@ -68,12 +68,12 @@ public class ComponentProcessor extends AbstractProcessor {
 	 */
 	private static final class ComponentInfo {
 		final TypeElement element;
-		final XspComponent annotation;
+		final XspGenComponent annotation;
 		final String baseComponentType;
 		final String componentType;
 		ComponentInfo(TypeElement element) {
 			this.element = element;
-			this.annotation = element.getAnnotation(XspComponent.class);
+			this.annotation = element.getAnnotation(XspGenComponent.class);
 			this.baseComponentType = annotation.baseComponentType();
 			this.componentType = element.getQualifiedName().toString();
 		}		
@@ -97,7 +97,7 @@ public class ComponentProcessor extends AbstractProcessor {
 			gen.start();
 		}
 		
-		Set<? extends Element> components = env.getElementsAnnotatedWith(XspComponent.class);
+		Set<? extends Element> components = env.getElementsAnnotatedWith(XspGenComponent.class);
 		List<ComponentInfo> componentsSorted = sortComponents(components);
 		
 		for (ComponentInfo component : componentsSorted) {
@@ -108,7 +108,7 @@ public class ComponentProcessor extends AbstractProcessor {
 			List<? extends Element> fields = component.element.getEnclosedElements();
 			for (Element field : fields) {
 				if (field.getKind() == ElementKind.FIELD) {
-					XspProperty annProp = field.getAnnotation(XspProperty.class);
+					XspGenProperty annProp = field.getAnnotation(XspGenProperty.class);
 					if (annProp != null) {
 						for (AbstractGenerator gen : generatros) {
 							gen.newProperty((VariableElement) field, annProp);
@@ -176,7 +176,7 @@ public class ComponentProcessor extends AbstractProcessor {
 		public final String fieldType;
 		public final String xspType;
 		public final String xspItemType;
-		public final XspProperty annotation;
+		public final XspGenProperty annotation;
 
 		public PropertyInfo(VariableElement field, String fieldType, String type, String itemType) {
 			this.field = field;
@@ -185,7 +185,7 @@ public class ComponentProcessor extends AbstractProcessor {
 			this.fieldType = fieldType;
 			this.xspType = type;
 			this.xspItemType = itemType;
-			this.annotation = field.getAnnotation(XspProperty.class);
+			this.annotation = field.getAnnotation(XspGenProperty.class);
 		}
 	}
 	

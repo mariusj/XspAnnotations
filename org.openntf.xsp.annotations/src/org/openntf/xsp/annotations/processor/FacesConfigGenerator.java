@@ -30,8 +30,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenProperty;
 
 import com.sun.java.xml.ns.javaee.FacesConfigRenderKitType;
 import com.sun.java.xml.ns.javaee.FacesConfigRendererType;
@@ -60,7 +60,7 @@ public class FacesConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
-	public void newComponent(TypeElement element, XspComponent annotation) {
+	public void newComponent(TypeElement element, XspGenComponent annotation) {
 		String fqn = element.getQualifiedName().toString();
 		FacesConfigRendererType renderer = new FacesConfigRendererType();
 		renderKit.getRenderer().add(renderer);
@@ -76,7 +76,7 @@ public class FacesConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
-	public void newProperty(VariableElement field, XspProperty annProp) {
+	public void newProperty(VariableElement field, XspGenProperty annProp) {
 	}
 
 	@Override

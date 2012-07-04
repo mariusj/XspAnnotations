@@ -4,7 +4,7 @@ package org.openntf.xsp.annotations;
  * Flag on XPages component to generate code for a Dojo Renderer.
  * @author Mariusz Jakubowski
  */
-public @interface XspDojoRenderer {
+public @interface XspGenDojoRenderer {
 	/**
 	 * Base class for this renderer (eg. com.ibm.xsp.extlib.renderkit.dojo.DojoWidgetRenderer.) 
 	 */

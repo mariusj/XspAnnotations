@@ -31,8 +31,8 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
 
 import com.sun.java.xml.ns.javaee.DescriptionType;
@@ -77,7 +77,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
-	public void newComponent(TypeElement element, XspComponent annotation) {
+	public void newComponent(TypeElement element, XspGenComponent annotation) {
 		Name name = element.getSimpleName();
 		messager.printMessage(Kind.NOTE, "adding component " + name);
 
@@ -139,7 +139,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
-	public void newProperty(VariableElement field, XspProperty annProp) {
+	public void newProperty(VariableElement field, XspGenProperty annProp) {
 		messager.printMessage(Kind.NOTE, "  adding property " + annProp.displayName());
 		FacesConfigPropertyType prop = new FacesConfigPropertyType();
 		component.getProperty().add(prop);

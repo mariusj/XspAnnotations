@@ -11,13 +11,13 @@ import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 
-import org.openntf.xsp.annotations.XspComponent;
-import org.openntf.xsp.annotations.XspDojoRenderer;
-import org.openntf.xsp.annotations.XspProperty;
+import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenDojoRenderer;
+import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
 
 /**
- * Generates a renderer code based on {@link XspComponent} and {@link XspDojoRenderer} annotations.
+ * Generates a renderer code based on {@link XspGenComponent} and {@link XspGenDojoRenderer} annotations.
  * @author Mariusz Jakubowski
  *
  */
@@ -30,7 +30,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	
 	private StringBuilder source;
 	private String pkg;
-	private XspDojoRenderer dojoAnnotation;
+	private XspGenDojoRenderer dojoAnnotation;
 
 	public DojoRendererSourceGenerator(Filer filer, Messager messager) {		
 		super(filer, messager);
@@ -41,8 +41,8 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public void newComponent(TypeElement element, XspComponent annotation) {
-		dojoAnnotation = element.getAnnotation(XspDojoRenderer.class);
+	public void newComponent(TypeElement element, XspGenComponent annotation) {
+		dojoAnnotation = element.getAnnotation(XspGenDojoRenderer.class);
 		if (dojoAnnotation == null)
 			return;
 
@@ -84,7 +84,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	 * Generates getDefaultDojoModule method.
 	 * @param dojoAnnotation
 	 */
-	private void module(XspDojoRenderer dojoAnnotation) {
+	private void module(XspGenDojoRenderer dojoAnnotation) {
 		if ("".equals(dojoAnnotation.dojoModule()))
 			return;
 		source.append("private static final DojoModuleResource module = " +
@@ -99,7 +99,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	 * Generates getDefaultDojoType method.
 	 * @param dojoAnnotation
 	 */
-	private void defaultDojoType(XspDojoRenderer dojoAnnotation) {
+	private void defaultDojoType(XspGenDojoRenderer dojoAnnotation) {
 		if ("".equals(dojoAnnotation.defaultDojoType()))
 			return;
 		source.append("@Override protected String getDefaultDojoType(" +
@@ -112,7 +112,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	 * Generates getTagName method.
 	 * @param dojoAnnotation
 	 */
-	private void tagName(XspDojoRenderer dojoAnnotation) {
+	private void tagName(XspGenDojoRenderer dojoAnnotation) {
 		if ("".equals(dojoAnnotation.tagName()))
 			return;
 		source.append("@Override protected String getTagName() {\n" +
@@ -124,7 +124,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	 * Generates getExtraResources method.
 	 * @param dojoAnnotation
 	 */
-	private void css(XspDojoRenderer dojoAnnotation) {
+	private void css(XspGenDojoRenderer dojoAnnotation) {
 		String[] css = dojoAnnotation.css();
 		if (css.length == 0)
 			return;
@@ -147,7 +147,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public void newProperty(VariableElement field, XspProperty annProp) {
+	public void newProperty(VariableElement field, XspGenProperty annProp) {
 		if (annProp.dontGenerateCode())
 			return;
 		if (dojoAnnotation == null)
