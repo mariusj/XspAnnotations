@@ -27,6 +27,7 @@ import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
@@ -56,6 +57,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 
 	@Override
 	public void start() {
+		// nothing to do		
 	}
 
 	@Override
@@ -232,6 +234,12 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 
 	@Override
 	public void end() throws Exception {
+		// nothing to do		
+	}
+
+	@Override
+	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
+		// nothing to do		
 	}
 	
 }

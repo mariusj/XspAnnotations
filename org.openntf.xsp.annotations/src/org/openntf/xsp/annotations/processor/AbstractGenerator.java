@@ -21,11 +21,12 @@ import javax.annotation.processing.Messager;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.element.VariableElement;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 
 /**
- * Base class for code & resource generators processing annotation XspComponent.  
+ * Base class for code & resource generators processing annotation {@link XspGenComponent}.  
  * @author Mariusz Jakubowski
  *
  */
@@ -51,14 +52,21 @@ public abstract class AbstractGenerator {
 	public abstract void start();
 	
 	/**
-	 * Called on new component (new class with XspComponent annotation).
+	 * Called on new component (new class with {@link XspGenComponent} annotation).
 	 * @param element processed class
 	 * @param annotation class annotation
 	 */
 	public abstract void newComponent(TypeElement element, XspGenComponent annotation);
+
+	/**
+	 * Called on new complexType (new class with {@link XspGenComplexType} annotation).
+	 * @param element processed class
+	 */
+	public abstract void newComplexType(TypeElement element, XspGenComplexType annotation);
+	
 	
 	/**
-	 * Called on new property (field with XspProperty annotation).
+	 * Called on new property (field with {@link XspGenProperty} annotation).
 	 * @param field processed field
 	 * @param annProp field annotation
 	 */
@@ -70,11 +78,13 @@ public abstract class AbstractGenerator {
 	 * @throws Exception
 	 */
 	public abstract void endComponent(TypeElement element) throws Exception;
+	
 
 	/**
 	 * Called when processing of annotations ends. 
 	 * @throws Exception
 	 */
 	public abstract void end() throws Exception;
+	
 	
 }

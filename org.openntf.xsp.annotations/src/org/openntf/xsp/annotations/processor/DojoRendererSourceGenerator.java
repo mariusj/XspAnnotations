@@ -11,6 +11,7 @@ import javax.lang.model.element.VariableElement;
 import javax.tools.Diagnostic.Kind;
 import javax.tools.FileObject;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenDojoRenderer;
 import org.openntf.xsp.annotations.XspGenProperty;
@@ -38,6 +39,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 
 	@Override
 	public void start() {
+		// nothing to do		
 	}
 
 	@Override
@@ -204,6 +206,12 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 
 	@Override
 	public void end() throws Exception {
+		// nothing to do		
+	}
+
+	@Override
+	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
+		// nothing to do		
 	}
 
 }

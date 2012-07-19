@@ -85,4 +85,10 @@ public @interface XspGenProperty {
 	 * If true code for this property will not be generated. 
 	 */
 	boolean dontGenerateCode() default false;
+	
+	/**
+	 * Indicates that the property value is localizable. 
+	 */
+	boolean localizable() default false;
+	
 }

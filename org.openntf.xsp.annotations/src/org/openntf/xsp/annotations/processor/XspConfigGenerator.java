@@ -31,6 +31,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
@@ -38,8 +39,11 @@ import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
 import com.sun.java.xml.ns.javaee.DescriptionType;
 import com.sun.java.xml.ns.javaee.DesignerExtension;
 import com.sun.java.xml.ns.javaee.DisplayNameType;
+import com.sun.java.xml.ns.javaee.FacesConfigComplexExtensionType;
+import com.sun.java.xml.ns.javaee.FacesConfigComplexType;
 import com.sun.java.xml.ns.javaee.FacesConfigComponentExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigComponentType;
+import com.sun.java.xml.ns.javaee.FacesConfigConverterType;
 import com.sun.java.xml.ns.javaee.FacesConfigExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigPropertyExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigPropertyType;
@@ -139,6 +143,36 @@ public class XspConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
+	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
+		Name name = element.getSimpleName();
+		messager.printMessage(Kind.NOTE, "adding complex type " + name);
+		
+		FacesConfigComplexType complex = new FacesConfigComplexType();
+		xspConfig.getApplicationOrFactoryOrComponent().add(complex);
+		
+		DescriptionType desc = new DescriptionType();
+		complex.getDescription().add(desc);
+		desc.setValue(annotation.description());
+		
+		DisplayNameType dname = new DisplayNameType();
+		complex.getDisplayName().add(dname);
+		dname.setValue(annotation.displayName());
+
+		complex.setComplexId(ComponentProcessor.wrapString(element.getQualifiedName().toString()));
+
+		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
+		fqcn.setValue(element.getQualifiedName().toString() + "Impl");
+		complex.setComplexClass(fqcn);
+		
+		FacesConfigComplexExtensionType ext = new FacesConfigComplexExtensionType();
+		complex.getComplexExtension().add(ext);
+		
+		ext.setTagName(annotation.tagName());
+	}
+	
+	
+	
+	@Override
 	public void newProperty(VariableElement field, XspGenProperty annProp) {
 		messager.printMessage(Kind.NOTE, "  adding property " + annProp.displayName());
 		FacesConfigPropertyType prop = new FacesConfigPropertyType();
@@ -191,6 +225,10 @@ public class XspConfigGenerator extends AbstractGenerator {
 		
 		if (!"".equals(annProp.propertyAddMethod())) {
 			ext.setPropertyAddMethod(annProp.propertyAddMethod());
+		}
+		
+		if (annProp.localizable()) {
+			ext.setLocalizable(true);
 		}
 		
 		PropertyDesignerExtensionType desExt = new PropertyDesignerExtensionType();

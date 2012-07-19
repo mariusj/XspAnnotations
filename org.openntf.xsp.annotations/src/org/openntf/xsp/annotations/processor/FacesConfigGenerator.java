@@ -30,6 +30,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 
@@ -77,10 +78,12 @@ public class FacesConfigGenerator extends AbstractGenerator {
 	
 	@Override
 	public void newProperty(VariableElement field, XspGenProperty annProp) {
+		// nothing to do		
 	}
 
 	@Override
 	public void endComponent(TypeElement element) throws Exception {
+		// nothing to do		
 	}
 
 	/**
@@ -101,6 +104,11 @@ public class FacesConfigGenerator extends AbstractGenerator {
 		JAXBElement<FacesConfigType> facesConfig2 = f.createFacesConfig(facesConfig);
 		m.marshal(facesConfig2, facesWriter);
 		facesWriter.close();
+	}
+
+	@Override
+	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
+		// nothing to do		
 	}
 
 	

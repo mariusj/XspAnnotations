@@ -36,12 +36,13 @@ import javax.lang.model.type.DeclaredType;
 import javax.lang.model.type.TypeMirror;
 import javax.tools.Diagnostic.Kind;
 
+import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 
 
 /**
- * Processor for XPages components annotations.
+ * Processor for XPages annotations.
  * @author Mariusz Jakubowski
  *
  */
@@ -49,6 +50,7 @@ import org.openntf.xsp.annotations.XspGenProperty;
 		"org.openntf.xsp.annotations.XspGenComponent", 
 		"org.openntf.xsp.annotations.XspGenProperty",
 		"org.openntf.xsp.annotations.XspGenDojoRenderer",
+		"org.openntf.xsp.annotations.XspGenComplexType",
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class ComponentProcessor extends AbstractProcessor {
@@ -71,6 +73,7 @@ public class ComponentProcessor extends AbstractProcessor {
 		final XspGenComponent annotation;
 		final String baseComponentType;
 		final String componentType;
+		
 		ComponentInfo(TypeElement element) {
 			this.element = element;
 			this.annotation = element.getAnnotation(XspGenComponent.class);
@@ -78,6 +81,20 @@ public class ComponentProcessor extends AbstractProcessor {
 			this.componentType = element.getQualifiedName().toString();
 		}		
 	};
+	
+	/**
+	 * Returns a list of generators.
+	 * @return
+	 */
+	private List<AbstractGenerator> getGenerators() {
+		List<AbstractGenerator> generatros = new ArrayList<AbstractGenerator>();
+		generatros.add(new FacesConfigGenerator(filer, messager));
+		generatros.add(new XspConfigGenerator(filer, messager));
+		//generatros.add(new CodeGenerator(filer, messager));
+		generatros.add(new ComponentSourceGenerator(filer, messager));
+		generatros.add(new DojoRendererSourceGenerator(filer, messager));
+		return generatros;
+	}
 
 	@Override
 	public boolean process(Set<? extends TypeElement> annotations,
@@ -86,16 +103,31 @@ public class ComponentProcessor extends AbstractProcessor {
 		if (annotations.size() == 0)
 			return true;
 		
-		List<AbstractGenerator> generatros = new ArrayList<AbstractGenerator>();
-		generatros.add(new FacesConfigGenerator(filer, messager));
-		generatros.add(new XspConfigGenerator(filer, messager));
-		//generatros.add(new CodeGenerator(filer, messager));
-		generatros.add(new ComponentSourceGenerator(filer, messager));
-		generatros.add(new DojoRendererSourceGenerator(filer, messager));
-		
+		List<AbstractGenerator> generatros = getGenerators();
 		for (AbstractGenerator gen : generatros) {
 			gen.start();
 		}
+		
+		Set<? extends Element> types = env.getElementsAnnotatedWith(XspGenComplexType.class);
+		for (Element e : types) {
+			for (AbstractGenerator gen : generatros) {
+				gen.newComplexType((TypeElement) e, e.getAnnotation(XspGenComplexType.class));
+			}
+
+			List<? extends Element> fields = e.getEnclosedElements();
+			for (Element field : fields) {
+				if (field.getKind() == ElementKind.FIELD) {
+					XspGenProperty annProp = field.getAnnotation(XspGenProperty.class);
+					if (annProp != null) {
+						for (AbstractGenerator gen : generatros) {
+							//gen.newProperty((VariableElement) field, annProp);
+						}
+					}
+				}
+			}
+		}
+		
+		
 		
 		Set<? extends Element> components = env.getElementsAnnotatedWith(XspGenComponent.class);
 		List<ComponentInfo> componentsSorted = sortComponents(components);
@@ -142,7 +174,7 @@ public class ComponentProcessor extends AbstractProcessor {
 	}
 
 	/**
-	 * Sorts depedents components.
+	 * Sorts components by dependency.
 	 * @param components a set of components
 	 * @return a list of sorted components
 	 */
