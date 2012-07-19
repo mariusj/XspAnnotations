@@ -30,7 +30,7 @@ import javax.tools.FileObject;
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
-import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
+import org.openntf.xsp.annotations.processor.XspProcessor.PropertyInfo;
 
 
 /**
@@ -123,7 +123,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 			return;
 		
 		this.annProp = annProp;
-		PropertyInfo propInfo = ComponentProcessor.javaTypeToXspType(field);
+		PropertyInfo propInfo = XspProcessor.javaTypeToXspType(field);
 		fields.add(propInfo);
 		
 		createSetter(propInfo);

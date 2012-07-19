@@ -34,7 +34,7 @@ import javax.xml.bind.Marshaller;
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
-import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
+import org.openntf.xsp.annotations.processor.XspProcessor.PropertyInfo;
 
 import com.sun.java.xml.ns.javaee.DescriptionType;
 import com.sun.java.xml.ns.javaee.DesignerExtension;
@@ -115,9 +115,9 @@ public class XspConfigGenerator extends AbstractGenerator {
 		}
 		
 		if (!"".equals(annotation.componentType()))
-			component.setComponentType(ComponentProcessor.wrapString(annotation.componentType()));
+			component.setComponentType(XspProcessor.wrapString(annotation.componentType()));
 		else
-			component.setComponentType(ComponentProcessor.wrapString(element.getQualifiedName().toString()));
+			component.setComponentType(XspProcessor.wrapString(element.getQualifiedName().toString()));
 		
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
 		fqcn.setValue(element.getQualifiedName().toString() + "Impl");
@@ -158,7 +158,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		complex.getDisplayName().add(dname);
 		dname.setValue(annotation.displayName());
 
-		complex.setComplexId(ComponentProcessor.wrapString(element.getQualifiedName().toString()));
+		complex.setComplexId(XspProcessor.wrapString(element.getQualifiedName().toString()));
 
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
 		fqcn.setValue(element.getQualifiedName().toString() + "Impl");
@@ -195,7 +195,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		
 		JavaTypeType type = new JavaTypeType();
 		if ("".equals(annProp.propertyClass())) {
-			PropertyInfo xspType = ComponentProcessor.javaTypeToXspType(field);
+			PropertyInfo xspType = XspProcessor.javaTypeToXspType(field);
 			type.setValue(xspType.xspType);
 			if (xspType.xspItemType != null) {
 				ext.setAllowRunTimeBinding(false);

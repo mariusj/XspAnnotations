@@ -15,7 +15,7 @@ import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenDojoRenderer;
 import org.openntf.xsp.annotations.XspGenProperty;
-import org.openntf.xsp.annotations.processor.ComponentProcessor.PropertyInfo;
+import org.openntf.xsp.annotations.processor.XspProcessor.PropertyInfo;
 
 /**
  * Generates a renderer code based on {@link XspGenComponent} and {@link XspGenDojoRenderer} annotations.
@@ -154,7 +154,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 			return;
 		if (dojoAnnotation == null)
 			return;
-		PropertyInfo propInfo = ComponentProcessor.javaTypeToXspType(field);
+		PropertyInfo propInfo = XspProcessor.javaTypeToXspType(field);
 		fields.add(propInfo);
 	}
 	

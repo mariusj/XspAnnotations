@@ -53,7 +53,7 @@ import org.openntf.xsp.annotations.XspGenProperty;
 		"org.openntf.xsp.annotations.XspGenComplexType",
 })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
-public class ComponentProcessor extends AbstractProcessor {
+public class XspProcessor extends AbstractProcessor {
 
 	private Filer filer;
 	private Messager messager;

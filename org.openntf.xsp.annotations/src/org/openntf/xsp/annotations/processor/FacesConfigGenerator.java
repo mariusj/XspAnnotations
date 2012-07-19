@@ -66,11 +66,11 @@ public class FacesConfigGenerator extends AbstractGenerator {
 		FacesConfigRendererType renderer = new FacesConfigRendererType();
 		renderKit.getRenderer().add(renderer);
 		if (!"".equals(annotation.componentFamily()))
-			renderer.setComponentFamily(ComponentProcessor.wrapString(annotation.componentFamily()));
+			renderer.setComponentFamily(XspProcessor.wrapString(annotation.componentFamily()));
 		if (!"".equals(annotation.renderer()))
-			renderer.setRendererType(ComponentProcessor.wrapString(annotation.renderer()));
+			renderer.setRendererType(XspProcessor.wrapString(annotation.renderer()));
 		else
-			renderer.setRendererType(ComponentProcessor.wrapString(fqn));
+			renderer.setRendererType(XspProcessor.wrapString(fqn));
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
 		fqcn.setValue(fqn + "Renderer");
 		renderer.setRendererClass(fqcn);
