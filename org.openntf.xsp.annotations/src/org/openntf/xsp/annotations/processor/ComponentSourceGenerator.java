@@ -122,6 +122,11 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 		if (annProp.dontGenerateCode())
 			return;
 		
+		// check if property is defined inside component
+		XspGenComponent parentAnnotation = field.getEnclosingElement().getAnnotation(XspGenComponent.class);
+		if (parentAnnotation == null)
+			return;
+					
 		this.annProp = annProp;
 		PropertyInfo propInfo = XspProcessor.javaTypeToXspType(field);
 		fields.add(propInfo);
