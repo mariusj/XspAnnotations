@@ -40,18 +40,17 @@ import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
 import org.openntf.xsp.annotations.XspGenProperty;
 
-
 /**
  * Processor for XPages annotations.
+ * 
  * @author Mariusz Jakubowski
- *
+ * 
  */
-@SupportedAnnotationTypes(value = { 
-		"org.openntf.xsp.annotations.XspGenComponent", 
+@SupportedAnnotationTypes(value = {
+		"org.openntf.xsp.annotations.XspGenComponent",
 		"org.openntf.xsp.annotations.XspGenProperty",
 		"org.openntf.xsp.annotations.XspGenDojoRenderer",
-		"org.openntf.xsp.annotations.XspGenComplexType",
-})
+		"org.openntf.xsp.annotations.XspGenComplexType", })
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class XspProcessor extends AbstractProcessor {
 
@@ -65,32 +64,100 @@ public class XspProcessor extends AbstractProcessor {
 	}
 
 	/**
+	 * Holds information about property.
+	 * 
+	 * @author Mariusz Jakubowski
+	 * 
+	 */
+	private static final class AnnPropertyInfo {
+		final VariableElement element;
+		final XspGenProperty annotation;
+
+		public AnnPropertyInfo(VariableElement element, XspGenProperty annotation) {
+			this.element = element;
+			this.annotation = annotation;
+		}
+	}
+
+	/**
+	 * Base class for caching information about annotated elements.
+	 * 
+	 * @author Mariusz Jakubowski
+	 * 
+	 */
+	private static class AnnotadedElemInfo {
+		final TypeElement element;
+		final List<AnnPropertyInfo> properties = new ArrayList<AnnPropertyInfo>();
+
+		public AnnotadedElemInfo(TypeElement element) {
+			this.element = element;
+			initProperties();
+		}
+
+		private void initProperties() {
+			List<? extends Element> fields = element.getEnclosedElements();
+			for (Element field : fields) {
+				if (field.getKind() == ElementKind.FIELD) {
+					XspGenProperty annProp = field
+							.getAnnotation(XspGenProperty.class);
+					if (annProp != null) {
+						properties.add(new AnnPropertyInfo(
+								(VariableElement) field, annProp));
+					}
+				}
+			}
+		}
+
+		List<AnnPropertyInfo> getProperties() {
+			return properties;
+		}
+
+	}
+
+	/**
 	 * Holds information about component.
+	 * 
 	 * @author Mariusz Jakubowski
 	 */
-	private static final class ComponentInfo {
-		final TypeElement element;
+	private static final class ComponentInfo extends AnnotadedElemInfo {
 		final XspGenComponent annotation;
 		final String baseComponentType;
 		final String componentType;
-		
+
 		ComponentInfo(TypeElement element) {
-			this.element = element;
+			super(element);
 			this.annotation = element.getAnnotation(XspGenComponent.class);
 			this.baseComponentType = annotation.baseComponentType();
 			this.componentType = element.getQualifiedName().toString();
-		}		
-	};
-	
+		}
+
+	}
+
+	/**
+	 * Holds information about complex type.
+	 * 
+	 * @author Mariusz Jakubowski
+	 * 
+	 */
+	private static final class ComplexInfo extends AnnotadedElemInfo {
+		final XspGenComplexType annotation;
+
+		public ComplexInfo(TypeElement element) {
+			super(element);
+			this.annotation = element.getAnnotation(XspGenComplexType.class);
+		}
+	}
+
 	/**
 	 * Returns a list of generators.
+	 * 
 	 * @return
 	 */
 	private List<AbstractGenerator> getGenerators() {
 		List<AbstractGenerator> generatros = new ArrayList<AbstractGenerator>();
 		generatros.add(new FacesConfigGenerator(filer, messager));
 		generatros.add(new XspConfigGenerator(filer, messager));
-		//generatros.add(new CodeGenerator(filer, messager));
+		// generatros.add(new CodeGenerator(filer, messager));
 		generatros.add(new ComponentSourceGenerator(filer, messager));
 		generatros.add(new DojoRendererSourceGenerator(filer, messager));
 		return generatros;
@@ -102,53 +169,43 @@ public class XspProcessor extends AbstractProcessor {
 		messager.printMessage(Kind.NOTE, "process " + annotations);
 		if (annotations.size() == 0)
 			return true;
-		
+
 		List<AbstractGenerator> generatros = getGenerators();
 		for (AbstractGenerator gen : generatros) {
 			gen.start();
 		}
-		
-		Set<? extends Element> types = env.getElementsAnnotatedWith(XspGenComplexType.class);
+
+		Set<? extends Element> types = env
+				.getElementsAnnotatedWith(XspGenComplexType.class);
 		for (Element e : types) {
+			ComplexInfo ci = new ComplexInfo((TypeElement) e);
+
 			for (AbstractGenerator gen : generatros) {
-				gen.newComplexType((TypeElement) e, e.getAnnotation(XspGenComplexType.class));
+				gen.newComplexType(ci.element, ci.annotation);
 			}
 
-			List<? extends Element> fields = e.getEnclosedElements();
-			for (Element field : fields) {
-				if (field.getKind() == ElementKind.FIELD) {
-					XspGenProperty annProp = field.getAnnotation(XspGenProperty.class);
-					if (annProp != null) {
-						for (AbstractGenerator gen : generatros) {
-							//gen.newProperty((VariableElement) field, annProp);
-						}
-					}
+			for (AnnPropertyInfo p : ci.getProperties()) {
+				for (AbstractGenerator gen : generatros) {
+					gen.newProperty(p.element, p.annotation);
 				}
 			}
 		}
-		
-		
-		
-		Set<? extends Element> components = env.getElementsAnnotatedWith(XspGenComponent.class);
+
+		Set<? extends Element> components = env
+				.getElementsAnnotatedWith(XspGenComponent.class);
 		List<ComponentInfo> componentsSorted = sortComponents(components);
-		
+
 		for (ComponentInfo component : componentsSorted) {
 			for (AbstractGenerator gen : generatros) {
 				gen.newComponent(component.element, component.annotation);
 			}
-			
-			List<? extends Element> fields = component.element.getEnclosedElements();
-			for (Element field : fields) {
-				if (field.getKind() == ElementKind.FIELD) {
-					XspGenProperty annProp = field.getAnnotation(XspGenProperty.class);
-					if (annProp != null) {
-						for (AbstractGenerator gen : generatros) {
-							gen.newProperty((VariableElement) field, annProp);
-						}
-					}
+
+			for (AnnPropertyInfo p : component.getProperties()) {
+				for (AbstractGenerator gen : generatros) {
+					gen.newProperty(p.element, p.annotation);
 				}
 			}
-			
+
 			for (AbstractGenerator gen : generatros) {
 				try {
 					gen.endComponent(component.element);
@@ -167,38 +224,45 @@ public class XspProcessor extends AbstractProcessor {
 				messager.printMessage(Kind.ERROR, e.toString());
 			}
 		}
-		
-		
+
 		messager.printMessage(Kind.NOTE, "process end");
 		return true;
 	}
 
 	/**
 	 * Sorts components by dependency.
-	 * @param components a set of components
+	 * 
+	 * @param components
+	 *            a set of components
 	 * @return a list of sorted components
 	 */
 	private List<ComponentInfo> sortComponents(Set<? extends Element> components) {
 		List<ComponentInfo> componentsSorted = new ArrayList<ComponentInfo>();
 		for (Element element : components) {
 			ComponentInfo component = new ComponentInfo((TypeElement) element);
-			messager.printMessage(Kind.NOTE, "    type:" + component.componentType);
-			messager.printMessage(Kind.NOTE, "    base:" + component.baseComponentType);
+			messager.printMessage(Kind.NOTE, "    type:"
+					+ component.componentType);
+			messager.printMessage(Kind.NOTE, "    base:"
+					+ component.baseComponentType);
 			int idx = 0;
-			for (; idx<componentsSorted.size(); idx++) {
-				if (component.componentType.equals(componentsSorted.get(idx).baseComponentType)) {
+			for (; idx < componentsSorted.size(); idx++) {
+				if (component.componentType
+						.equals(componentsSorted.get(idx).baseComponentType)) {
 					messager.printMessage(Kind.NOTE, "    ++parent");
 					break;
 				}
 			}
-			messager.printMessage(Kind.NOTE, "    adding " + component.element.getSimpleName() + " @ " + idx);
-			componentsSorted.add(idx, component);			
+			messager.printMessage(Kind.NOTE,
+					"    adding " + component.element.getSimpleName() + " @ "
+							+ idx);
+			componentsSorted.add(idx, component);
 		}
 		return componentsSorted;
 	}
 
 	/**
 	 * Information about xsp property.
+	 * 
 	 * @author Mariusz Jakubowski
 	 */
 	static final class PropertyInfo {
@@ -210,26 +274,31 @@ public class XspProcessor extends AbstractProcessor {
 		public final String xspItemType;
 		public final XspGenProperty annotation;
 
-		public PropertyInfo(VariableElement field, String fieldType, String type, String itemType) {
+		public PropertyInfo(VariableElement field, String fieldType,
+				String type, String itemType) {
 			this.field = field;
 			this.fieldName = field.getSimpleName().toString();
-			this.fieldUName = Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+			this.fieldUName = Character.toUpperCase(fieldName.charAt(0))
+					+ fieldName.substring(1);
 			this.fieldType = fieldType;
 			this.xspType = type;
 			this.xspItemType = itemType;
 			this.annotation = field.getAnnotation(XspGenProperty.class);
 		}
 	}
-	
+
 	/**
-	 * Fills information about field & property from field definition & XspProperty annotation.
-	 * @param field field to analyze
+	 * Fills information about field & property from field definition &
+	 * XspProperty annotation.
+	 * 
+	 * @param field
+	 *            field to analyze
 	 * @return info about property
 	 */
 	public static PropertyInfo javaTypeToXspType(VariableElement field) {
 		TypeMirror asType = field.asType();
 		switch (asType.getKind()) {
-		case BOOLEAN: 
+		case BOOLEAN:
 			return new PropertyInfo(field, "boolean", "boolean", null);
 		case INT:
 			return new PropertyInfo(field, "int", "int", null);
@@ -246,34 +315,45 @@ public class XspProcessor extends AbstractProcessor {
 				TypeElement elemType2 = (TypeElement) elemType;
 				String typeStr = elemType2.getQualifiedName().toString();
 				if (Boolean.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.Boolean", "boolean", null);
+					return new PropertyInfo(field, "java.lang.Boolean",
+							"boolean", null);
 				} else if (Integer.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.Integer", "int", null);
+					return new PropertyInfo(field, "java.lang.Integer", "int",
+							null);
 				} else if (Long.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.Long", "long", null);
+					return new PropertyInfo(field, "java.lang.Long", "long",
+							null);
 				} else if (Float.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.Float", "float", null);
+					return new PropertyInfo(field, "java.lang.Float", "float",
+							null);
 				} else if (Double.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.Double", "double", null);
+					return new PropertyInfo(field, "java.lang.Double",
+							"double", null);
 				} else if (String.class.getCanonicalName().equals(typeStr)) {
-					return new PropertyInfo(field, "java.lang.String", "java.lang.String", null);
+					return new PropertyInfo(field, "java.lang.String",
+							"java.lang.String", null);
 				} else if (List.class.getCanonicalName().equals(typeStr)) {
-					List<? extends TypeMirror> typeArguments = decType.getTypeArguments();
+					List<? extends TypeMirror> typeArguments = decType
+							.getTypeArguments();
 					String typeArg = null;
 					if (typeArguments.size() > 0) {
 						typeArg = typeArguments.get(0).toString();
 					}
-					return new PropertyInfo(field, decType.toString(), typeStr, typeArg);
+					return new PropertyInfo(field, decType.toString(), typeStr,
+							typeArg);
 				}
 			}
-			return new PropertyInfo(field, decType.toString(), decType.toString(), null);
+			return new PropertyInfo(field, decType.toString(),
+					decType.toString(), null);
 		}
-		return new PropertyInfo(field, "java.lang.String", "java.lang.String", null);		
+		return new PropertyInfo(field, "java.lang.String", "java.lang.String",
+				null);
 	}
-	
+
 	/**
-	 * Wraps a string into com.sun.java.xml.ns.javaee.String type. 
-	 * @param value 
+	 * Wraps a string into com.sun.java.xml.ns.javaee.String type.
+	 * 
+	 * @param value
 	 * @return
 	 */
 	static com.sun.java.xml.ns.javaee.String wrapString(String value) {

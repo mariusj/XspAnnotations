@@ -1,4 +1,6 @@
 XspAnnotations
 ==============
 
-Annotations and generators for XPages components.
+A set of annotations and code generators for XPages components.
+
+
