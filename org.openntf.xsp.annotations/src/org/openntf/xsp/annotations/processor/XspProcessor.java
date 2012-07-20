@@ -345,9 +345,10 @@ public class XspProcessor extends AbstractProcessor {
 			}
 			return new PropertyInfo(field, decType.toString(),
 					decType.toString(), null);
+		default:
+			return new PropertyInfo(field, "java.lang.String", "java.lang.String",
+					null);
 		}
-		return new PropertyInfo(field, "java.lang.String", "java.lang.String",
-				null);
 	}
 
 	/**

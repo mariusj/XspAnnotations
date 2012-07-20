@@ -43,7 +43,6 @@ import com.sun.java.xml.ns.javaee.FacesConfigComplexExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigComplexType;
 import com.sun.java.xml.ns.javaee.FacesConfigComponentExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigComponentType;
-import com.sun.java.xml.ns.javaee.FacesConfigConverterType;
 import com.sun.java.xml.ns.javaee.FacesConfigExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigPropertyExtensionType;
 import com.sun.java.xml.ns.javaee.FacesConfigPropertyType;
@@ -64,6 +63,7 @@ import com.sun.java.xml.ns.javaee.PropertyDesignerExtensionType;
 public class XspConfigGenerator extends AbstractGenerator {
 	private FacesConfigType xspConfig;
 	private FacesConfigComponentType component;
+	private FacesConfigComplexType complex;
 
 	public XspConfigGenerator(Filer filer, Messager messager) {
 		super(filer, messager);
@@ -86,6 +86,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		messager.printMessage(Kind.NOTE, "adding component " + name);
 
 		component = new FacesConfigComponentType();
+		complex = null;
 		xspConfig.getApplicationOrFactoryOrComponent().add(component);
 		
 		DescriptionType desc = new DescriptionType();
@@ -148,6 +149,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		messager.printMessage(Kind.NOTE, "adding complex type " + name);
 		
 		FacesConfigComplexType complex = new FacesConfigComplexType();
+		component = null;
 		xspConfig.getApplicationOrFactoryOrComponent().add(complex);
 		
 		DescriptionType desc = new DescriptionType();
@@ -176,7 +178,11 @@ public class XspConfigGenerator extends AbstractGenerator {
 	public void newProperty(VariableElement field, XspGenProperty annProp) {
 		messager.printMessage(Kind.NOTE, "  adding property " + annProp.displayName());
 		FacesConfigPropertyType prop = new FacesConfigPropertyType();
-		component.getProperty().add(prop);
+		if (component != null) {
+			component.getProperty().add(prop);
+		} else if (complex != null) {
+			complex.getProperty().add(prop);
+		}
 
 		DescriptionType pdesc = new DescriptionType();						
 		prop.getDescription().add(pdesc);
