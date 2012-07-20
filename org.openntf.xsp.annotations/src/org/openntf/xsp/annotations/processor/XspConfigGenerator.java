@@ -148,7 +148,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		Name name = element.getSimpleName();
 		messager.printMessage(Kind.NOTE, "adding complex type " + name);
 		
-		FacesConfigComplexType complex = new FacesConfigComplexType();
+		complex = new FacesConfigComplexType();
 		component = null;
 		xspConfig.getApplicationOrFactoryOrComponent().add(complex);
 		
@@ -163,7 +163,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		complex.setComplexId(XspProcessor.wrapString(element.getQualifiedName().toString()));
 
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
-		fqcn.setValue(element.getQualifiedName().toString() + "Impl");
+		fqcn.setValue(element.getQualifiedName().toString() /*+ "Impl"*/);
 		complex.setComplexClass(fqcn);
 		
 		FacesConfigComplexExtensionType ext = new FacesConfigComplexExtensionType();
@@ -240,7 +240,9 @@ public class XspConfigGenerator extends AbstractGenerator {
 		PropertyDesignerExtensionType desExt = new PropertyDesignerExtensionType();
 		ext.setDesignerExtension(desExt);
 		
-		desExt.setCategory(annProp.category());
+		if (!"".equals(annProp.category())) {
+			desExt.setCategory(annProp.category());
+		}
 		
 		if (!"".equals(annProp.editor())) {
 			desExt.setEditor(annProp.editor());
