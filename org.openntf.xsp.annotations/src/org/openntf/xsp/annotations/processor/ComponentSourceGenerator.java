@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -70,12 +70,14 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 		
 		newFullName = baseFullName + "Impl";
 		newSimpleName = baseSimpleName + "Impl";
+		
+		messager.printMessage(Kind.NOTE, "  generating code for component " + newSimpleName);
 
 		pkg = newFullName.substring(0, newFullName.indexOf(newSimpleName) - 1);
 		
 		source = new StringBuilder();
 		header();
-        constructor(annotation);
+        componentConstructor(annotation);
         if (!"".equals(annotation.componentFamily()))
     		getFamily(annotation.componentFamily());
         fields = new ArrayList<PropertyInfo>();
@@ -92,10 +94,10 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 	}
 	
 	/**
-	 * Generates constructor.
+	 * Generates constructor for a component.
 	 * @param annotation
 	 */
-	private void constructor(XspGenComponent annotation) {
+	private void componentConstructor(XspGenComponent annotation) {
 		source.append("public " + newSimpleName + "() {\n");
 		if (!"".equals(annotation.renderer()))
 			source.append("setRendererType(\"" + annotation.renderer() + "\");\n");
@@ -104,6 +106,15 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 		source.append("}\n\n");
 	}
 	
+	/**
+	 * Generates constructor for a component.
+	 * @param annotation
+	 */
+	private void complexConstructor(XspGenComplexType annotation) {
+		source.append("public " + newSimpleName + "() {\n");
+		source.append("}\n\n");
+	}
+
 	/**
 	 * Generates getFamily metod.
 	 */
@@ -123,10 +134,16 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 			return;
 		
 		// check if property is defined inside component
-		XspGenComponent parentAnnotation = field.getEnclosingElement().getAnnotation(XspGenComponent.class);
+		Object parentAnnotation = field.getEnclosingElement().getAnnotation(XspGenComponent.class);
+		if (parentAnnotation == null) {
+			parentAnnotation = field.getEnclosingElement().getAnnotation(XspGenComplexType.class);
+		}
+
 		if (parentAnnotation == null)
 			return;
 					
+		messager.printMessage(Kind.NOTE, "    generating code for property " + annProp.displayName());
+
 		this.annProp = annProp;
 		PropertyInfo propInfo = XspProcessor.javaTypeToXspType(field);
 		fields.add(propInfo);
@@ -244,7 +261,23 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 
 	@Override
 	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
-		// nothing to do		
+		if (!annotation.generateCode())
+			return;
+		
+		baseSimpleName = element.getSimpleName().toString();
+		baseFullName = element.getQualifiedName().toString();
+		
+		newFullName = baseFullName + "Impl";
+		newSimpleName = baseSimpleName + "Impl";
+
+		messager.printMessage(Kind.NOTE, "  generating code for complex type " + newSimpleName);
+
+		pkg = newFullName.substring(0, newFullName.indexOf(newSimpleName) - 1);
+		
+		source = new StringBuilder();
+		header();
+        complexConstructor(annotation);
+        fields = new ArrayList<PropertyInfo>();
 	}
 	
 }

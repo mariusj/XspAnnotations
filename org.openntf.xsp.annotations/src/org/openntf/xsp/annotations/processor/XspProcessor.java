@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -175,22 +175,25 @@ public class XspProcessor extends AbstractProcessor {
 			gen.start();
 		}
 
-		Set<? extends Element> types = env
-				.getElementsAnnotatedWith(XspGenComplexType.class);
-		for (Element e : types) {
-			ComplexInfo ci = new ComplexInfo((TypeElement) e);
+		procesComplexTypes(env, generatros);
 
-			for (AbstractGenerator gen : generatros) {
-				gen.newComplexType(ci.element, ci.annotation);
-			}
+		procesComponents(env, generatros);
 
-			for (AnnPropertyInfo p : ci.getProperties()) {
-				for (AbstractGenerator gen : generatros) {
-					gen.newProperty(p.element, p.annotation);
-				}
+		for (AbstractGenerator gen : generatros) {
+			try {
+				gen.end();
+			} catch (Exception e) {
+				e.printStackTrace();
+				messager.printMessage(Kind.ERROR, e.toString());
 			}
 		}
 
+		messager.printMessage(Kind.NOTE, "process end");
+		return true;
+	}
+
+	private void procesComponents(RoundEnvironment env,
+			List<AbstractGenerator> generatros) {
 		Set<? extends Element> components = env
 				.getElementsAnnotatedWith(XspGenComponent.class);
 		List<ComponentInfo> componentsSorted = sortComponents(components);
@@ -215,18 +218,34 @@ public class XspProcessor extends AbstractProcessor {
 				}
 			}
 		}
+	}
 
-		for (AbstractGenerator gen : generatros) {
-			try {
-				gen.end();
-			} catch (Exception e) {
-				e.printStackTrace();
-				messager.printMessage(Kind.ERROR, e.toString());
+	private void procesComplexTypes(RoundEnvironment env,
+			List<AbstractGenerator> generatros) {
+		Set<? extends Element> types = env
+				.getElementsAnnotatedWith(XspGenComplexType.class);
+		for (Element e : types) {
+			ComplexInfo ci = new ComplexInfo((TypeElement) e);
+
+			for (AbstractGenerator gen : generatros) {
+				gen.newComplexType(ci.element, ci.annotation);
+			}
+
+			for (AnnPropertyInfo p : ci.getProperties()) {
+				for (AbstractGenerator gen : generatros) {
+					gen.newProperty(p.element, p.annotation);
+				}
+			}
+
+			for (AbstractGenerator gen : generatros) {
+				try {
+					gen.endComponent(ci.element);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+					messager.printMessage(Kind.ERROR, ex.toString());
+				}
 			}
 		}
-
-		messager.printMessage(Kind.NOTE, "process end");
-		return true;
 	}
 
 	/**

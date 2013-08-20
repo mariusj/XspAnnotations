@@ -75,7 +75,7 @@ public class FacesConfigType {
         @XmlElement(name = "lifecycle", type = FacesConfigLifecycleType.class),
         @XmlElement(name = "managed-bean", type = FacesConfigManagedBeanType.class),
         @XmlElement(name = "converter", type = FacesConfigConverterType.class),
-        @XmlElement(name = "complex", type = FacesConfigComplexType.class),
+        @XmlElement(name = "complex-type", type = FacesConfigComplexType.class),
         @XmlElement(name = "render-kit", type = FacesConfigRenderKitType.class),
         @XmlElement(name = "component", type = FacesConfigComponentType.class),
         @XmlElement(name = "referenced-bean", type = FacesConfigReferencedBeanType.class),

@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -41,5 +41,10 @@ public @interface XspGenComplexType {
 	 * Tag used in xpage.
 	 */
 	String tagName();
+	
+	/**
+	 * Flag indicating that a source code for a complext type should be generated.
+	 */
+	boolean generateCode() default true;
 	
 }
