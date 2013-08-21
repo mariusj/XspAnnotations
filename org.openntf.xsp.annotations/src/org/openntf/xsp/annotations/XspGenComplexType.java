@@ -47,4 +47,10 @@ public @interface XspGenComplexType {
 	 */
 	boolean generateCode() default true;
 	
+	/**
+	 * Id of a base type. 
+	 */
+	String baseComplexId() default "";
+	
+	
 }

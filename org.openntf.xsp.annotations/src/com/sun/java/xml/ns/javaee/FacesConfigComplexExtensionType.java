@@ -41,12 +41,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "faces-config-complex-extensionType", namespace = "http://java.sun.com/xml/ns/javaee", propOrder = {
-    "tagName"
+    "tagName",
+    "baseComplexId"
 })
 public class FacesConfigComplexExtensionType {
 
     @XmlElement(name = "tag-name", required = true)
     protected java.lang.String tagName;
+    @XmlElement(name = "base-complex-id", required = false)
+    protected java.lang.String baseComplexId;
     @XmlAttribute
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
     @XmlID
@@ -76,6 +79,14 @@ public class FacesConfigComplexExtensionType {
     public void setTagName(java.lang.String value) {
         this.tagName = value;
     }
+    
+    public java.lang.String getBaseComplexId() {
+		return baseComplexId;
+	}
+    
+    public void setBaseComplexId(java.lang.String baseComplexId) {
+		this.baseComplexId = baseComplexId;
+	}
 
     /**
      * Gets the value of the id property.

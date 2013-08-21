@@ -13,6 +13,7 @@ import javax.tools.FileObject;
 
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenConfig;
 import org.openntf.xsp.annotations.XspGenDojoRenderer;
 import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.XspProcessor.PropertyInfo;
@@ -38,7 +39,7 @@ public class DojoRendererSourceGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public void start() {
+	public void start(XspGenConfig config) {
 		// nothing to do		
 	}
 

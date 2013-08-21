@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -33,6 +33,7 @@ import javax.xml.bind.Marshaller;
 
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenConfig;
 import org.openntf.xsp.annotations.XspGenProperty;
 import org.openntf.xsp.annotations.processor.XspProcessor.PropertyInfo;
 
@@ -70,14 +71,16 @@ public class XspConfigGenerator extends AbstractGenerator {
 	}
 
 	@Override
-	public void start() {
+	public void start(XspGenConfig config) {
 		xspConfig = new FacesConfigType();
 		
 		FacesConfigExtensionType ext = new FacesConfigExtensionType();
 		xspConfig.getApplicationOrFactoryOrComponent().add(ext);
 
-		ext.setDefaultPrefix("xe");
-		ext.setNamespaceUri("http://www.ibm.com/xsp/coreex");
+		if (config != null) {
+			ext.setDefaultPrefix(config.defaultPrefix());
+			ext.setNamespaceUri(config.namespaceUri());
+		}
 	}
 	
 	@Override
@@ -170,6 +173,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		complex.getComplexExtension().add(ext);
 		
 		ext.setTagName(annotation.tagName());
+		ext.setBaseComplexId(annotation.baseComplexId());
 	}
 	
 	

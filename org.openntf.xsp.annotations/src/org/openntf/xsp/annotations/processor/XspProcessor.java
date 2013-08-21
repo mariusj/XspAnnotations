@@ -38,6 +38,7 @@ import javax.tools.Diagnostic.Kind;
 
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenConfig;
 import org.openntf.xsp.annotations.XspGenProperty;
 
 /**
@@ -47,10 +48,11 @@ import org.openntf.xsp.annotations.XspGenProperty;
  * 
  */
 @SupportedAnnotationTypes(value = {
+		"org.openntf.xsp.annotations.XspGenConfig", 
 		"org.openntf.xsp.annotations.XspGenComponent",
 		"org.openntf.xsp.annotations.XspGenProperty",
 		"org.openntf.xsp.annotations.XspGenDojoRenderer",
-		"org.openntf.xsp.annotations.XspGenComplexType", })
+		"org.openntf.xsp.annotations.XspGenComplexType",})
 @SupportedSourceVersion(SourceVersion.RELEASE_6)
 public class XspProcessor extends AbstractProcessor {
 
@@ -169,17 +171,24 @@ public class XspProcessor extends AbstractProcessor {
 		messager.printMessage(Kind.NOTE, "process " + annotations);
 		if (annotations.size() == 0)
 			return true;
-
-		List<AbstractGenerator> generatros = getGenerators();
-		for (AbstractGenerator gen : generatros) {
-			gen.start();
+		
+		XspGenConfig configAnnotation = null;
+		Set<? extends Element> config = env.getElementsAnnotatedWith(XspGenConfig.class);
+		if (!config.isEmpty()) {
+			Element configElement = config.iterator().next();
+			 configAnnotation = configElement.getAnnotation(XspGenConfig.class);
 		}
 
-		procesComplexTypes(env, generatros);
+		List<AbstractGenerator> generators = getGenerators();
+		for (AbstractGenerator gen : generators) {
+			gen.start(configAnnotation);
+		}
 
-		procesComponents(env, generatros);
+		procesComplexTypes(env, generators);
 
-		for (AbstractGenerator gen : generatros) {
+		procesComponents(env, generators);
+
+		for (AbstractGenerator gen : generators) {
 			try {
 				gen.end();
 			} catch (Exception e) {

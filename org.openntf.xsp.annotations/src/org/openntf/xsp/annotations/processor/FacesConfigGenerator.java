@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -32,6 +32,7 @@ import javax.xml.bind.Marshaller;
 
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenConfig;
 import org.openntf.xsp.annotations.XspGenProperty;
 
 import com.sun.java.xml.ns.javaee.FacesConfigRenderKitType;
@@ -54,7 +55,7 @@ public class FacesConfigGenerator extends AbstractGenerator {
 	}
 	
 	@Override
-	public void start() {
+	public void start(XspGenConfig config) {
 		facesConfig = new FacesConfigType();
 		renderKit = new FacesConfigRenderKitType();
 		facesConfig.getApplicationOrFactoryOrComponent().add(renderKit);

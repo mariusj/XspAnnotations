@@ -1,5 +1,5 @@
 /*
- * © Copyright Mariusz Jakubowski 2012
+ * ï¿½ Copyright Mariusz Jakubowski 2012
  * 
  * Licensed under the Apache License, Version 2.0 (the "License"); 
  * you may not use this file except in compliance with the License. 
@@ -23,6 +23,7 @@ import javax.lang.model.element.VariableElement;
 
 import org.openntf.xsp.annotations.XspGenComplexType;
 import org.openntf.xsp.annotations.XspGenComponent;
+import org.openntf.xsp.annotations.XspGenConfig;
 import org.openntf.xsp.annotations.XspGenProperty;
 
 /**
@@ -49,7 +50,7 @@ public abstract class AbstractGenerator {
 	/**
 	 * Called when processing of annotations starts.
 	 */
-	public abstract void start();
+	public abstract void start(XspGenConfig config);
 	
 	/**
 	 * Called on new component (new class with {@link XspGenComponent} annotation).
