@@ -166,7 +166,7 @@ public class XspConfigGenerator extends AbstractGenerator {
 		complex.setComplexId(XspProcessor.wrapString(element.getQualifiedName().toString()));
 
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
-		fqcn.setValue(element.getQualifiedName().toString() /*+ "Impl"*/);
+		fqcn.setValue(element.getQualifiedName().toString() + "Impl");
 		complex.setComplexClass(fqcn);
 		
 		FacesConfigComplexExtensionType ext = new FacesConfigComplexExtensionType();

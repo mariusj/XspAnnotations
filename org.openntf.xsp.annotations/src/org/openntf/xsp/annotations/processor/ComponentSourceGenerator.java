@@ -180,7 +180,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
 			.append("if (_vb != null) {\n")
 			.append(propInfo.fieldType + " val = (" + propInfo.fieldType + ") _vb.getValue(FacesContext.getCurrentInstance());\n")
 			.append("if (val != null)\n")
-			.append("return val;")
+			.append("return val;\n")
 			.append("}\n");
 		String defaultValue = annProp.defaultValue();
 		if ("".equals(defaultValue)) {
