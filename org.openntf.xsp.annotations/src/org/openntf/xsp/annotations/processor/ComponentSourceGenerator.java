@@ -246,7 +246,7 @@ public class ComponentSourceGenerator extends AbstractGenerator {
         restoreState();
         saveState();
         source.append("}\n");
-		String fname = pkg.replace('.', '/') + '/' + newSimpleName; 
+        String fname = pkg + '.' + newSimpleName;
 		messager.printMessage(Kind.NOTE, fname);
 		FileObject srcFile = filer.createSourceFile(fname, element);
 		messager.printMessage(Kind.NOTE, "creating " + srcFile.toUri());
