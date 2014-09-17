@@ -43,76 +43,77 @@ import com.sun.java.xml.ns.javaee.ObjectFactory;
 
 /**
  * Generates faces-config.xml file.
+ * 
  * @author Mariusz Jakubowski
  *
  */
 public class FacesConfigGenerator extends AbstractGenerator {
 	private FacesConfigType facesConfig;
 	private FacesConfigRenderKitType renderKit;
-	
+
 	public FacesConfigGenerator(Filer filer, Messager messager) {
 		super(filer, messager);
 	}
-	
+
 	@Override
 	public void start(XspGenConfig config) {
 		facesConfig = new FacesConfigType();
 		renderKit = new FacesConfigRenderKitType();
 		facesConfig.getApplicationOrFactoryOrComponent().add(renderKit);
 	}
-	
+
 	@Override
 	public void newComponent(TypeElement element, XspGenComponent annotation) {
 		String fqn = element.getQualifiedName().toString();
 		FacesConfigRendererType renderer = new FacesConfigRendererType();
 		renderKit.getRenderer().add(renderer);
 		if (!"".equals(annotation.componentFamily()))
-			renderer.setComponentFamily(XspProcessor.wrapString(annotation.componentFamily()));
+			renderer.setComponentFamily(XspProcessor.wrapString(annotation
+					.componentFamily()));
 		if (!"".equals(annotation.renderer()))
-			renderer.setRendererType(XspProcessor.wrapString(annotation.renderer()));
+			renderer.setRendererType(XspProcessor.wrapString(annotation
+					.renderer()));
 		else
 			renderer.setRendererType(XspProcessor.wrapString(fqn));
 		FullyQualifiedClassType fqcn = new FullyQualifiedClassType();
 		fqcn.setValue(fqn + "Renderer");
 		renderer.setRendererClass(fqcn);
 	}
-	
+
 	@Override
 	public void newProperty(VariableElement field, XspGenProperty annProp) {
-		// nothing to do		
+		// nothing to do
 	}
 
 	@Override
 	public void endComponent(TypeElement element) throws Exception {
-		// nothing to do		
+		// nothing to do
 	}
 
 	/**
-	 * {@inheritDoc}
-	 * Writes library.faces-config.xml file.
+	 * {@inheritDoc} Writes library.faces-config.xml file.
 	 */
 	@Override
 	public void end() throws Exception {
-//		JAXBContext context = JAXBContext
-//				.newInstance("com.sun.java.xml.ns.javaee");
-		JAXBContext context = JAXBContext
-				.newInstance(FacesConfigType.class);
+		JAXBContext context = JAXBContext.newInstance(FacesConfigType.class,
+				FacesConfigRenderKitType.class, FacesConfigRendererType.class,
+				FullyQualifiedClassType.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		FileObject file = filer.createResource(StandardLocation.SOURCE_OUTPUT,
-				"", "../META-INF/library.faces-config.xml", (Element[]) null);
+				"", "META-INF/library.faces-config.xml", (Element[]) null);
 		messager.printMessage(Kind.NOTE, "creating " + file.toUri());
 		Writer facesWriter = file.openWriter();
 		ObjectFactory f = new ObjectFactory();
-		JAXBElement<FacesConfigType> facesConfig2 = f.createFacesConfig(facesConfig);
+		JAXBElement<FacesConfigType> facesConfig2 = f
+				.createFacesConfig(facesConfig);
 		m.marshal(facesConfig2, facesWriter);
 		facesWriter.close();
 	}
 
 	@Override
 	public void newComplexType(TypeElement element, XspGenComplexType annotation) {
-		// nothing to do		
+		// nothing to do
 	}
 
-	
 }
