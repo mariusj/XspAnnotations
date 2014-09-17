@@ -268,8 +268,10 @@ public class XspConfigGenerator extends AbstractGenerator {
 	 */
 	@Override
 	public void end() throws Exception {
+//		JAXBContext context = JAXBContext
+//				.newInstance("com.sun.java.xml.ns.javaee");
 		JAXBContext context = JAXBContext
-				.newInstance("com.sun.java.xml.ns.javaee");
+				.newInstance(FacesConfigType.class);
 		Marshaller m = context.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 		FileObject file = filer.createResource(StandardLocation.SOURCE_OUTPUT,
