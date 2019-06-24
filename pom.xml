@@ -12,8 +12,8 @@
 	</modules>
 
 	<properties>
-		<tycho-version>0.21.0</tycho-version>
-		<compiler>1.6</compiler>
+        <tycho-version>0.24.0</tycho-version>
+		<compiler>1.8</compiler>
 	</properties>
 	
 	<repositories>
