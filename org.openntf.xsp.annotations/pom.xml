@@ -5,7 +5,7 @@
 
 	<artifactId>org.openntf.xsp.annotations</artifactId>
 
-	<packaging>eclipse-plugin</packaging>
+	<packaging>jar</packaging>
 
 	<parent>
 		<groupId>org.openntf.xsp.annotations</groupId>
@@ -16,4 +16,5 @@
 	<build>
 		<sourceDirectory>src</sourceDirectory>
 	</build>
+	
 </project>

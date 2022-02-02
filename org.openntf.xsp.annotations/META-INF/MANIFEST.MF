@@ -8,3 +8,4 @@ Export-Package: com.sun.java.xml.ns.javaee,
  org.openntf.xsp.annotations,
  org.openntf.xsp.annotations.processor
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
